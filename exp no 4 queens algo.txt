@@ -1,0 +1,37 @@
+def solve_n_queens(n):
+    def is_safe(row, col, diagonals, anti_diagonals, cols):
+        return col not in cols and (row - col) not in diagonals and (row + col) not in anti_diagonals
+
+    def backtrack(row, diagonals, anti_diagonals, cols, state):
+        if row == n:
+            solutions.append(state[:])
+            return
+
+        for col in range(n):
+            if is_safe(row, col, diagonals, anti_diagonals, cols):
+                # Choose
+                cols.add(col)
+                diagonals.add(row - col)
+                anti_diagonals.add(row + col)
+                state.append(col)
+
+                # Explore
+                backtrack(row + 1, diagonals, anti_diagonals, cols, state)
+
+                # Un-choose (Backtrack)
+                cols.remove(col)
+                diagonals.remove(row - col)
+                anti_diagonals.remove(row + col)
+                state.pop()
+
+    solutions = []
+    backtrack(0, set(), set(), set(), [])
+    return solutions
+
+# Example usage:
+n = 8
+solutions = solve_n_queens(n)
+print(f"Total solutions for {n}-Queens: {len(solutions)}")
+# Optionally print one of the solutions
+for row in solutions[0]:
+    print('.' * row + 'Q' + '.' * (n - row - 1))

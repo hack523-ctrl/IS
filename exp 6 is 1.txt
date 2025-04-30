@@ -1,0 +1,9 @@
+s = "Hello\nWorld"
+
+print("AND with 127:")
+for c in s:
+    print(chr(ord(c) & 127), end='')
+
+print("\nXOR with 127:")
+for c in s:
+    print(chr(ord(c) ^ 127), end='')

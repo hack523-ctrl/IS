@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Diffie-Hellman Key Exchange</title>
+</head>
+<body>
+  <h2>Diffie-Hellman Key Exchange</h2>
+
+  <p>Commonly agreed values:</p>
+  <ul>
+    <li>Prime number (p): <strong id="prime"></strong></li>
+    <li>Base (g): <strong id="base"></strong></li>
+  </ul>
+
+  <label for="aliceSecret">Enter your secret (Alice's private key): </label>
+  <input type="number" id="aliceSecret" min="1">
+  <button onclick="generateKeys()">Generate Shared Key</button>
+
+  <h3>Results:</h3>
+  <p>Alice's Public Key: <span id="alicePub"></span></p>
+  <p>Bob's Public Key: <span id="bobPub"></span></p>
+  <p>Shared Secret Key (Alice's View): <span id="aliceShared"></span></p>
+  <p>Shared Secret Key (Bob's View): <span id="bobShared"></span></p>
+
+  <script>
+    // Shared prime and base
+    const p = 23; // Small prime for demo
+    const g = 5;  // Base
+
+    document.getElementById("prime").textContent = p;
+    document.getElementById("base").textContent = g;
+
+    function modExp(base, exponent, modulus) {
+      // Performs modular exponentiation (base^exponent) % modulus efficiently
+      let result = 1;
+      base = base % modulus;
+      while (exponent > 0) {
+        if (exponent % 2 === 1) {
+          result = (result * base) % modulus;
+        }
+        exponent = Math.floor(exponent / 2);
+        base = (base * base) % modulus;
+      }
+      return result;
+    }
+
+    function generateKeys() {
+      const aliceSecret = parseInt(document.getElementById("aliceSecret").value);
+      if (isNaN(aliceSecret) || aliceSecret <= 0) {
+        alert("Please enter a valid positive number for your secret.");
+        return;
+      }
+
+      // Bob's private key (generated randomly for demo)
+      const bobSecret = Math.floor(Math.random() * (p - 2)) + 1;
+
+      // Public keys
+      const alicePub = modExp(g, aliceSecret, p);
+      const bobPub = modExp(g, bobSecret, p);
+
+      // Shared keys
+      const aliceShared = modExp(bobPub, aliceSecret, p);
+      const bobShared = modExp(alicePub, bobSecret, p);
+
+      // Display
+      document.getElementById("alicePub").textContent = alicePub;
+      document.getElementById("bobPub").textContent = bobPub;
+      document.getElementById("aliceShared").textContent = aliceShared;
+      document.getElementById("bobShared").textContent = bobShared;
+    }
+  </script>
+</body>
+</html>
